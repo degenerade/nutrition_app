@@ -6,12 +6,12 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const app = express()
-app.use(cors({ origin: 'http//localhost:5173' }))
-app.use(express.json)
+app.use(cors({ origin: 'http://localhost:5173' }))
+app.use(express.json())
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB connected'))
-    .catch(err => console.log(err))
+    .catch(err => console.error('MongoDB error:', err.message))
 
 app.get('/api/health', (req, res) => res.json({ ok:true }))
 
