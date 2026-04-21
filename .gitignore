@@ -3,4 +3,4 @@ client/node_modules/
 server/node_modules/
 server/.env
 dist/
-mongodb_user.txt
+server/mongodb_user.txt
