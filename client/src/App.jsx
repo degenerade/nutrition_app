@@ -25,8 +25,8 @@ function App() {
       <button onClick={handleSearch}>Search</button>
 
       {results.map(food => (
-        <div key={food.fdcId} onClick={() => handleSelect(food)}>
-          {food.name}
+        <div id='foodSelect' key={food.fdcId} onClick={() => handleSelect(food)}>
+          {food.name}; ({food.category})
         </div>
       ))}
 
