@@ -1,5 +1,5 @@
 import express from 'express'
-import mongoose, { get }  from 'mongoose'
+import { connectDB } from './config/db.js'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import { router } from './routes/routerIndex.js'
@@ -10,8 +10,9 @@ app.use(cors({ origin: 'http://localhost:5173' }))
 app.use(express.json())
 app.use('/', router)
 
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => console.error('MongoDB error:', err.message))
+const start = async () => {
+    await connectDB()
+    app.listen(process.env.PORT, () => console.log(`Server on :${process.env.PORT}`))
+}
 
-app.listen(process.env.PORT, () => console.log(`Server on :${process.env.PORT}`))
+start()
