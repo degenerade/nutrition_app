@@ -46,4 +46,41 @@ controller.addUser = async (req, res) => {
     }
 }
 
+controller.updateUser = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id, 10)
+        const updates = req.body
+        const updated = await userModel.updateUser(id, updates)
+        if (updated) {
+            res.json(updated)
+        } else {
+            res.status(404).json({
+                error: 'No such user found'
+            })
+        }
+    } catch (err) {
+        res.status(500).json({
+            error: err.stack
+        })
+    }
+}
+
+controller.deleteUser = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id, 10)
+        const deleted = await userModel.deleteUser(id)
+        if (deleted) {
+            res.status(204).send()
+        } else {
+            res.status(404).json({
+                error: 'No such user found'
+            })
+        }
+    } catch (err) {
+        res.status(500).json({
+            error: err.stack
+        })
+    }
+}
+
 export { controller }

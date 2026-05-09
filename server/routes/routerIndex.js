@@ -9,6 +9,6 @@ router.use('/', messageRoute)
 
 router.use('/api/nutrition', nutritionRoutes)
 
-router.use('/api/v1', userRoutes)
+router.use('/api/users', userRoutes)
 
 export { router }
