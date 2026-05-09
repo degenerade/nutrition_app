@@ -7,7 +7,7 @@ export default function SignupPage() {
     const { login } = useAuth()
     const navigate = useNavigate()
 
-    const [form, setForm] = useState({ name: '', email: '', passwrod: '' })
+    const [form, setForm] = useState({ name: '', email: '', password: '' })
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false)
 

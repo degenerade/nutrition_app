@@ -38,6 +38,13 @@ export default function LoginPage() {
                 value={form.email}
                 onChange={handleChange}
             />
+            <input
+                name="password"
+                type="password"
+                placeholder="Password"
+                value={form.password}
+                onChange={handleChange}
+            />
 
             {error && <p>{error}</p>}
 

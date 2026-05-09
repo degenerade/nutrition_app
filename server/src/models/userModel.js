@@ -6,7 +6,7 @@ const counterSchema = new mongoose.Schema({
     seq: { type: Number, default: 0 }
 })
 
-const Counter = mongoose.model('Counter', counterSchema)
+export const Counter = mongoose.model('Counter', counterSchema)
 
 const userSchema = new mongoose.Schema({
     id: { type: Number, unique: true },
