@@ -1,7 +1,7 @@
 export const searchIngredient = async (req, res) => {
     try {
         const response = await fetch(
-            `https://api.nal.usda.gov/fdc/v1/foods/search?query=${req.params.ingredient}&dataType=Foundation,SR Legacy&pageSize=5&api_key=${process.env.USDA_API_KEY}`
+            `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(req.params.ingredient)}&dataType=Foundation,SR Legacy&pageSize=5&api_key=${process.env.USDA_API_KEY}`
         )
         const data = await response.json()
 
