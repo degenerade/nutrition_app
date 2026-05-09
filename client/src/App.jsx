@@ -1,45 +1,29 @@
-import { useState } from 'react'
-import './App.css'
-//import { set } from 'mongoose'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider } from './context/AuthProvider'
+import { useAuth } from './hooks/useAuth'
+import LoginPage from './pages/LoginPage'
+import SignupPage from './pages/SignupPage'
+import MealsPage from './pages/MealsPage'
+
+function ProtectedRoute({ children }) {
+  const { token } = useAuth()
+  return token ? children : <Navigate to="/login" />
+}
 
 function App() {
-  const [query, setQuery] = useState('')
-  const [results, setResults] = useState([])
-  const [selected, setSelected] = useState(null)
-
-  const handleSearch = async () => {
-    const response = await fetch(`/api/nutrition/${query}`)
-    const data = await response.json()
-    setResults(data)
-    setSelected(null)
-  }
-
-  const handleSelect = (food) => {
-    setSelected(food)
-    setResults([])
-  }
-
   return (
-    <div>
-      <input value={query} onChange={e => setQuery(e.target.value)} />
-      <button onClick={handleSearch}>Search</button>
-
-      {results.map(food => (
-        <div id='foodSelect' key={food.fdcId} onClick={() => handleSelect(food)}>
-          {food.name}; ({food.category})
-        </div>
-      ))}
-
-      {selected && (
-        <div>
-          <p>{selected.name}</p>
-          <p>Calories: {selected.per100g.calories}kcal</p>
-          <p>Protein: {selected.per100g.protein}g</p>
-          <p>Carbs: {selected.carbs}g</p>
-          <p>Fat: {selected.fat}g</p>
-        </div>
-      )}
-    </div>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login"  element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/meals"  element={
+            <ProtectedRoute><MealsPage /></ProtectedRoute>
+          } />
+          <Route path="*" element={<Navigate to="/meals" />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
 
