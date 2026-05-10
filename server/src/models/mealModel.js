@@ -27,4 +27,25 @@ const mealSchema = new mongoose.Schema({
     }
 }, { timeseries: true })
 
-export default mongoose.model('Meal', mealSchema)
+const Meal = mongoose.model('Meal', mealSchema)
+
+export const mealModel = {}
+
+mealModel.findMeals = async (tag) => {
+    const filter = tag ? { tags: tag } : {}
+    return (await Meal.find(filter)).sort({ createdAt: -1 })
+}
+
+mealModel.findMealById = async (id) => {
+    return await Meal.findById(id)
+}
+
+mealModel.createMeal = async (data) => {
+    return await new Meal(data).save()
+}
+
+mealModel.deleteMeal = async (id) => {
+    return await Meal.findByIdAndDelete(id)
+}
+
+export default Meal

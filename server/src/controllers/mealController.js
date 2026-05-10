@@ -1,4 +1,4 @@
-import Meal from '../models/mealModel.js'
+import Meal, { mealModel } from '../models/mealModel.js'
 
 const calculateTotals = (ingredients) => {
     return ingredients.reduce((totals, ing) => {
@@ -19,9 +19,7 @@ export const mealController = {}
 // GET /api/meals - all meals for browse page
 mealController.getMeals = async (req, res) => {
     try {
-        const { tag } = req.query // /api/meals?tag=vegan
-        const filter = tag ? { tags: tag } : {}
-        const meals = (await Meal.find(filter)).toSorted({ createdAt: -1 })
+        const meals = await mealModel.findMeals(req.query.tag)
         res.json(meals)
     } catch (err) {
         res.status(500).json({ error: err.message })
@@ -31,7 +29,7 @@ mealController.getMeals = async (req, res) => {
 // GET /api/meals/:id - single meal
 mealController.getMealById = async (req, res) => {
     try {
-        const meal = await Meal.findById(req.params.id)
+        const meal = await mealModel.findMealById(req.params.id)
         if (!meal) return res.status(404).json({ error: 'Meal not found' })
         res.json(meal)
     } catch (err) {
@@ -44,7 +42,7 @@ mealController.createMeal = async (req, res) => {
     try {
         const { name, tags, ingredients } = req.body
         const totals = calculateTotals(ingredients)
-        const meal = await new Meal({
+        const meal = await mealModel.createMeal({
             name,
             tags,
             ingredients,
@@ -60,10 +58,10 @@ mealController.createMeal = async (req, res) => {
 // DELETE /api/meals/:id (protected, only owner)
 mealController.deleteMeal = async (req, res) => {
     try {
-        const meal = await Meal.findById(req.params.id)
+        const meal = await mealModel.findMealById(req.params.id)
         if (!meal) return res.status(404).json({ error: 'Meal not found' })
         if (meal.createdBy !== req.user.sub) return res.status(403).json({ error: 'forbidden' })
-        await meal.deleteOne()
+        await mealModel.deleteMeal(req.params.id)
         res.status(204).send()
     } catch (err) {
         res.status(500).json({ error: err.message })
