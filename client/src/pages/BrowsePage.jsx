@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { api } from '../lib/api'
+import { TAGS } from '../lib/constants'
 import MealCard from '../components/MealCard'
-
-const TAGS = ['healthy', 'vegan', 'vegetarian', 'high protein', 'low carb', 'bulking']
 
 export default function BrowsePage() {
     const [meals, setMeals]         = useState([])

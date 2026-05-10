@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
-
-const TAGS = ['healthy', 'vegan', 'vegetarian', 'high protein', 'low carb', 'bulking']
+import { TAGS, FOOD_CATEGORIES } from '../lib/constants'
 
 export default function CreateMealPage() {
     const navigate = useNavigate()
@@ -14,6 +13,7 @@ export default function CreateMealPage() {
     const [ingredients, setIngredients]     = useState([]) // fdcId, name, amount, per100g
     const [error, setError]                 = useState(null)
     const [saving, setSaving]               = useState(false)
+    const [category, setCategory]           = useState('')
 
     const handleTagToggle = (tag) => {
         setSelectedTags(prev =>
@@ -24,7 +24,10 @@ export default function CreateMealPage() {
     const handleSearch = async () => {
         if (!query.trim()) return
         try {
-            const data = await api.get(`/nutrition/${encodeURIComponent(query)}`)
+            const path = category
+                ? `/nutrition/${encodeURIComponent(query)}?category=${encodeURIComponent(category)}`
+                : `/nutrition/${encodeURIComponent(query)}`
+            const data = await api.get(path)
             setResults(data)
         } catch {
             setError('Search failed')
@@ -103,6 +106,22 @@ export default function CreateMealPage() {
             </div>
 
             {/* ingredient search */}
+            <div style={{
+                display:        'flex',
+                gap:            '8px',
+                marginBottom:   '8px',
+                flexWrap:       'wrap'
+            }}>
+                {FOOD_CATEGORIES.map(cat => (
+                    <button
+                        key={cat.value}
+                        onClick={() => setCategory(cat.value)}
+                        className={`tag-btn ${category === cat.value ? 'active' : ''}`}
+                    >
+                        {cat.label}
+                    </button>
+                ))}
+            </div>
             <input
                 value={query}
                 onChange={e => setQuery(e.target.value)}
