@@ -1,26 +1,25 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthProvider'
-import { useAuth } from './hooks/useAuth'
+import Navbar from './components/Navbar'
+import ProtectedRoute from './components/ProtectedRoute'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
-import MealsPage from './pages/MealsPage'
-
-function ProtectedRoute({ children }) {
-  const { token } = useAuth()
-  return token ? children : <Navigate to="/login" />
-}
+import BrowsePage from './pages/BrowsePage'
+import CreateMealPage from './pages/CreateMealPage'
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <Navbar />
         <Routes>
-          <Route path="/login"  element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/meals"  element={
-            <ProtectedRoute><MealsPage /></ProtectedRoute>
+          <Route path="/login"        element={<LoginPage />} />
+          <Route path="/signup"       element={<SignupPage />} />
+          <Route path="/meals"        element={<BrowsePage />} />
+          <Route path="/meals/create" element={
+            <ProtectedRoute><CreateMealPage /></ProtectedRoute>
           } />
-          <Route path="*" element={<Navigate to="/meals" />} />
+          <Route path="*"             element={<Navigate to="/meals" />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

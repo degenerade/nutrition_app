@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { api } from '../lib/api'
+import MealCard from '../components/MealCard'
 
 const TAGS = ['healthy', 'vegan', 'vegetarian', 'high protein', 'low carb', 'bulking']
 
@@ -53,18 +54,7 @@ export default function BrowsePage() {
               ? <p>No meals found</p>
               : <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem'}}>
                     {meals.map(meal => (
-                        <div key={meal._id}>
-                            <h3>{meal.name}</h3>
-                            <p>{Math.round(meal.totals.calories)}kcal</p>
-                            <p>P: {Math.round(meal.totals.protein)}g |
-                               C: {Math.round(meal.totals.carbs)}g |
-                               F: {Math.round(meal.totals.fat)}g
-                            </p>
-                            <div>
-                                {meal.tags.map(tag => <span key={tag}>{tag}</span>)}
-                            </div>
-                            <p>{meal.ingredients.length}  ingredients</p>
-                        </div>
+                        <MealCard key={meal._id} meal={meal}/>
                     ))}
 
                 </div>
