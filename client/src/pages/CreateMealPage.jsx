@@ -4,7 +4,7 @@ import { api } from '../lib/api'
 
 const TAGS = ['healthy', 'vegan', 'vegetarian', 'high protein', 'low carb', 'bulking']
 
-export default function createMealPage() {
+export default function CreateMealPage() {
     const navigate = useNavigate()
 
     const [name, setName]                   = useSate('')
