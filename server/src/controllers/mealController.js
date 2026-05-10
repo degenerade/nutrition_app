@@ -48,7 +48,7 @@ mealController.createMeal = async (req, res) => {
             ingredients,
             totals,
             createdBy: req.user.sub  // comes from jwt via requireAuth
-        }).save()
+        })
         res.status(201).json(meal)
     } catch (err) {
         res.status(500).json({ error: err.message })

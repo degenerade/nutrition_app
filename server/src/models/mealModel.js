@@ -25,7 +25,7 @@ const mealSchema = new mongoose.Schema({
         fiber: Number,
         sugar: Number
     }
-}, { timeseries: true })
+}, { timestamps: true })
 
 const Meal = mongoose.model('Meal', mealSchema)
 
@@ -33,7 +33,7 @@ export const mealModel = {}
 
 mealModel.findMeals = async (tag) => {
     const filter = tag ? { tags: tag } : {}
-    return (await Meal.find(filter)).sort({ createdAt: -1 })
+    return await Meal.find(filter).sort({ _id: -1 })
 }
 
 mealModel.findMealById = async (id) => {
