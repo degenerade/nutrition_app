@@ -9,10 +9,10 @@ const counterSchema = new mongoose.Schema({
 export const Counter = mongoose.model('Counter', counterSchema)
 
 const userSchema = new mongoose.Schema({
-    id: { type: Number, unique: true },
-    name: { type: String, required: true },
-    email: { type: String, required: true },
-    password: { type: String, required: true },
+    id:         { type: Number, unique: true },
+    name:       { type: String, required: true },
+    email:      { type: String, required: true },
+    password:   { type: String, required: true },
 }, { timestamps: true })
 
 export const User = mongoose.model('User', userSchema)

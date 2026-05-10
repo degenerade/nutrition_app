@@ -4,3 +4,4 @@ server/node_modules/
 server/.env
 dist/
 server/mongodb_user.txt
+fatsecret info.txt

@@ -1,0 +1,177 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { api } from '../lib/api'
+import { TAGS, FOOD_CATEGORIES } from '../lib/constants'
+
+export default function CreateMealPage() {
+    const navigate = useNavigate()
+
+    const [name, setName]                   = useState('')
+    const [selectedTags, setSelectedTags]   = useState([])
+    const [query, setQuery]                 = useState('')
+    const [results, setResults]             = useState([])
+    const [ingredients, setIngredients]     = useState([]) // fdcId, name, amount, per100g
+    const [error, setError]                 = useState(null)
+    const [saving, setSaving]               = useState(false)
+    const [category, setCategory]           = useState('')
+
+    const handleTagToggle = (tag) => {
+        setSelectedTags(prev =>
+            prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
+        )
+    }
+
+    const handleSearch = async () => {
+        if (!query.trim()) return
+        try {
+            const path = category
+                ? `/nutrition/${encodeURIComponent(query)}?category=${encodeURIComponent(category)}`
+                : `/nutrition/${encodeURIComponent(query)}`
+            const data = await api.get(path)
+            setResults(data)
+        } catch {
+            setError('Search failed')
+        }
+    }
+
+    const handleAddIngredient = (food) => {
+        //duplicates
+        if (ingredients.find(i => i.fdcId === food.fdcId)) {
+            setResults([])
+            setQuery('')
+            return
+        }
+        setIngredients(prev => [...prev, { ...food, amount: 100 }]) //default 100g
+        setResults([])
+        setQuery('')
+    }
+
+    const handleAmountChange = (fdcId, value) => {
+        setIngredients(prev =>
+            prev.map(i => i.fdcId === fdcId ? { ...i, amount: Number(value) } : i)
+        )
+    }
+
+    const handleRemove = (fdcId) => {
+        setIngredients(prev => prev.filter(i => i.fdcId !== fdcId))
+    }
+
+    const handleSave = async () => {
+        if (!name.trim())               return setError('Meal needs a name')
+        if (ingredients.length === 0)   return setError('Add at least one ingredient')
+        try {
+            setSaving(true)
+            await api.post('/meals', { name, tags: selectedTags, ingredients })
+            navigate('/meals')
+        } catch (err) {
+            setError(err.message || 'Could not save meal')
+        } finally {
+            setSaving(false)
+        }
+    }
+
+    //live preview
+    const preview = ingredients.reduce((totals, ing) => {
+        const r = ing.amount / 100
+        return {
+            calories:   totals.calories + ing.per100g.calories  * r,
+            protein:    totals.protein  + ing.per100g.protein   * r,
+            carbs:      totals.carbs    + ing.per100g.carbs     * r,
+            fat:        totals.fat      + ing.per100g.fat       * r
+        }
+    }, { calories: 0, protein: 0, carbs: 0, fat: 0})
+
+    return (
+        <div>
+            <h1>Create Meal</h1>
+
+            {/* meal name */}
+            <input
+                value={name}
+                onChange={e => setName(e.target.value)}
+                placeholder="Meal name..."
+            />
+
+            {/* tags */}
+            <div>
+                {TAGS.map(tag => (
+                    <button
+                        key={tag}
+                        onClick={() => handleTagToggle(tag)}
+                        style={{ fontWeight: selectedTags.includes(tag) ? 'bold' : 'normal' }}
+                    >
+                        {tag}
+                    </button>
+                ))}
+            </div>
+
+            {/* ingredient search */}
+            <div style={{
+                display:        'flex',
+                gap:            '8px',
+                marginBottom:   '8px',
+                flexWrap:       'wrap'
+            }}>
+                {FOOD_CATEGORIES.map(cat => (
+                    <button
+                        key={cat.value}
+                        onClick={() => setCategory(cat.value)}
+                        className={`tag-btn ${category === cat.value ? 'active' : ''}`}
+                    >
+                        {cat.label}
+                    </button>
+                ))}
+            </div>
+            <input
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleSearch()}
+                placeholder="Search ingredient..."
+            />
+            <button onClick={handleSearch}>Search</button>
+
+            {results.map(food => (
+                <div key={food.fdcId} onClick={() => handleAddIngredient(food)}>
+                    {food.name} ({food.category})
+                </div>
+            ))}
+
+            {/* ingredient list */}
+            {ingredients.length > 0 && (
+                <div>
+                    <h3>Ingredients</h3>
+                    {ingredients.map(ing => (
+                        <div key={ing.fdcId}>
+                            <span>{ing.name}</span>
+                            <input
+                                type="number"
+                                min="1"
+                                value={ing.amount}
+                                onChange={e => handleAmountChange(ing.fdcId, e.target.value)}
+                            />
+                            <span>g</span>
+                            <button onClick={() => handleRemove(ing.fdcId)}>Remove</button>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {/* live ing preview */}
+            {ingredients.length > 0 && (
+                <div>
+                    <h3>Nutrition preview</h3>
+                    <p>Calories:    {Math.round(preview.calories)}kcal</p>
+                    <p>Protein:     {Math.round(preview.protein)}g</p>
+                    <p>Carbs:       {Math.round(preview.carbs)}g</p>
+                    <p>Fat:         {Math.round(preview.fat)}g</p>
+                </div>
+            )}
+
+            {error && <p>{error}</p>}
+
+            <button onClick={handleSave} disabled={saving}>
+                {saving ? 'Saving...' : 'Save meal'}
+            </button>
+        </div>
+    )
+}

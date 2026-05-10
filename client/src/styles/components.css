@@ -1,0 +1,96 @@
+/* buttons */
+.btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    border: 0.5px solid var(--border);
+    background: none;
+    color: var(--text-secondary);
+    transition: border-color 0.15s, color 0.15s;
+}
+.btn:hover {
+    border-color: var(--border-accent);
+    color: var(--accent);
+}
+
+.btn-primary {
+    border-color: var(--accent-deep);
+    color: var(--accent-dim);
+    background: var(--border-accent);
+}
+.btn-primary:hover {
+    background: #3B6D11;
+}
+
+.btn-active {
+    color: var(--accent);
+    border-color: var(--border-accent);
+}
+
+/* cards */
+.card {
+    background: var(--bg-surface);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+}
+
+/* tags/pills */
+.pill {
+    color: #7ab85a;
+    background: var(--bg-raised);
+    border: 0.5px solid #2a4a1a;
+    font-size: 11px;
+    border-radius: 999px;
+    padding: 3px 8px;
+}
+
+.tag-btn {
+    color: var(--text-secondary);
+    background: none;
+    border: 0.5px solid var(--border);
+    cursor: pointer;
+    font-size: 12px;
+    border-radius: 999px;
+    padding: 5px 12px;
+}
+.tag-btn.active {
+    border-color: var(--bg-raised);
+    color: var(--accent);
+    background: var(--border-accent);
+}
+
+/* nutrition preview bar */
+.nutrition-preview {
+    background: var(--bg-raised);
+    border: 0.5px solid;
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    text-align: center;
+}
+.nutrition-preview .label {
+    color: var(--text-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+}
+.nutrition-preview .value {
+    color: var(--accent);
+    font-size: 20px;
+    font-weight: 500;
+}
+
+/* section label */
+.section-label {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
