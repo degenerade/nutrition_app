@@ -9,16 +9,16 @@ export const searchIngredient = async (req, res) => {
             food.foodNutrients.find(n => n.nutrientId === id)?.value ?? 0
 
         const results = data.foods.map(food => ({
-            fdcId: food.fdcId,
-            name: food.description,
-            category: food.foodCategory,
+            fdcId:      food.fdcId,
+            name:       food.description,
+            category:   food.foodCategory,
             per100g: {
-                calories: getNutrient(food, 1008),
-                protein: getNutrient(food, 1003),
-                fat: getNutrient(food, 1004),
-                carbs: getNutrient(food, 1005),
-                fiber: getNutrient(food, 1079),
-                sugar: getNutrient(food, 2000)
+                calories:   getNutrient(food, 1008),
+                protein:    getNutrient(food, 1003),
+                fat:        getNutrient(food, 1004),
+                carbs:      getNutrient(food, 1005),
+                fiber:      getNutrient(food, 1079),
+                sugar:      getNutrient(food, 2000)
         }
     }))
 
