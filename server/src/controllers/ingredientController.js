@@ -1,4 +1,4 @@
-import { ingredientModel } from '../models/nutritionModel.js'
+import { ingredientModel } from '../models/ingredientModel.js'
 
 export const searchIngredient = async (req, res) => {
     try {
