@@ -44,6 +44,14 @@ mealModel.createMeal = async (data) => {
     return await new Meal(data).save()
 }
 
+mealModel.updateMeal = async (id, updates) => {
+    return await Meal.findByIdAndUpdate(
+        id,
+        { $set: updates },
+        { returnDocument: 'after', new: true }
+    )
+}
+
 mealModel.deleteMeal = async (id) => {
     return await Meal.findByIdAndDelete(id)
 }

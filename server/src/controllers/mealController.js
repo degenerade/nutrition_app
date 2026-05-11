@@ -55,12 +55,26 @@ mealController.createMeal = async (req, res) => {
     }
 }
 
+mealController.updateMeal = async (req, res) => {
+    try {
+        const meal = await mealModel.findMealById(req.params.id)
+        if (!meal) return res.status(404).json({ error: 'Meal not found' })
+        if (meal.createdBy !== Number(req.user.sub)) return res.status(403).json({ error: 'Forbidden'})
+        const updated = await mealModel.updateMeal(req.params.id, req.body)
+        console.log('updated:', updated)
+        res.json(updated)
+    } catch (err) {
+        console.log('update error:', err.message)
+        res.status(500).json({ error: err.message })
+    }
+}
+
 // DELETE /api/meals/:id (protected, only owner)
 mealController.deleteMeal = async (req, res) => {
     try {
         const meal = await mealModel.findMealById(req.params.id)
         if (!meal) return res.status(404).json({ error: 'Meal not found' })
-        if (meal.createdBy !== req.user.sub) return res.status(403).json({ error: 'forbidden' })
+        if (meal.createdBy !== Number(req.user.sub)) return res.status(403).json({ error: 'forbidden' })
         await mealModel.deleteMeal(req.params.id)
         res.status(204).send()
     } catch (err) {

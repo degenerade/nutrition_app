@@ -7,11 +7,14 @@ const request = async (path, options = {}) => {
         ...options,
         headers: {
             'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache, no-store',
+            'Pragma': 'no-cache',
             ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {}),
             ...options.headers,
         },
     })
     if (!res.ok) throw new Error(await res.text())
+    if (res.status === 204) return null
     return res.json()
 }
 

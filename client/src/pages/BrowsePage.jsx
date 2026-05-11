@@ -26,6 +26,15 @@ export default function BrowsePage() {
         fetchMeals()
     }, [activeTag]) // refetch when tage changes
 
+    const handleDelete = (id) => {
+        setMeals(prev => prev.filter(m => m._id !== id))
+    }
+
+    const handleUpdate = (updated) => {
+        if (!updated) return
+        setMeals(prev => prev.map(m => m._id === updated._id ? updated : m))
+    }
+
     const handleTag = (tag) => setActiveTag(prev => prev === tag ? null : tag) // toggle
 
     if (loading)    return <p>Loading...</p>
@@ -58,7 +67,12 @@ export default function BrowsePage() {
                 {meals.length === 0
                     ? <p className={styles.empty}>No meals found</p>
                     : meals.map(meal => (
-                        <MealCard key={meal._id} meal={meal}/>
+                        <MealCard
+                            key={meal._id}
+                            meal={meal}
+                            onDelete={handleDelete}
+                            onUpdate={handleUpdate}
+                        />
                         ))
                     }
             </div>
