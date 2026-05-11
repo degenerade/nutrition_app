@@ -24,6 +24,9 @@ export default function BrowsePage() {
             }
         }
         fetchMeals()
+        const interval = setInterval(fetchMeals, 30000)
+
+        return () => clearInterval(interval)
     }, [activeTag]) // refetch when tage changes
 
     const handleDelete = (id) => {
