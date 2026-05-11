@@ -1,7 +1,16 @@
+import { ingredientModel } from '../models/nutritionModel.js'
+
 export const searchIngredient = async (req, res) => {
     try {
         const { ingredient } = req.params
         const { category } = req.query
+
+        const cached = await ingredientModel.findByQuery(ingredient)
+        if (cached.length > 0) {
+            console.log('fetched from cache')
+            return res.json(cached)
+        }
+
         const categoryParam = category ? `,${encodeURIComponent(category)}` : ''
         const response = await fetch(
             `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(req.params.ingredient)}&dataType=Foundation,SR Legacy&pageSize=5&api_key=${process.env.USDA_API_KEY}`
@@ -25,10 +34,12 @@ export const searchIngredient = async (req, res) => {
                     carbs:      getNutrient(food, 1005),
                     fiber:      getNutrient(food, 1079),
                     sugar:      getNutrient(food, 2000)
-        }
-    }))
+                }
+            }))
 
-    res.json(results)
+        await Promise.all(results.map(r => ingredientModel.saveIngredient(r)))
+
+        res.json(results)
     } catch (err) {
         res.status(500).json({ error: err.message })
     }
