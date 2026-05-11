@@ -1,0 +1,115 @@
+.container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.title {
+    margin-bottom: 2rem;
+}
+
+.section {
+    margin-bottom: 1.5rem;
+}
+
+.tagRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.categoryRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.searchRow {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.searchBtn {
+    white-space: nowrap;
+    width: auto;
+}
+
+.results {
+    padding: 4px 0;
+    margin-bottom: 1rem;
+}
+
+.resultsItem {
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+.resultItem:hover {
+    background: var(--bg-raised);
+}
+
+.resultItem:last-child {
+    border-bottom: none;
+}
+
+.resultCategory {
+    color: var(--text-muted);
+    margin-left: 8px;
+    font-size: 12px;
+}
+
+.ingredientList {
+    padding: 0;
+}
+
+.ingredientRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-bottom: 0.5px solid var(--border);
+}
+
+.ingredientRow:last-child {
+    border-bottom: none;
+}
+
+.ingredientName {
+    flex: 1;
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+.amountInput {
+    width: 72px;
+    text-align: right;
+    margin-bottom: 0;
+}
+
+.unit {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.removeBtn {
+    padding: 13px;
+    font-size: 12px;
+}
+
+.error {
+    color: #ff6b6b;
+    margin-bottom: 1rem;
+    font-size: 14px;
+}
+
+.saveBtn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 0.5rem;
+}

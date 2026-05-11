@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
 import { TAGS, FOOD_CATEGORIES } from '../lib/constants'
+import styles from '../styles/CreateMealPage.module.css'
 
 export default function CreateMealPage() {
     const navigate = useNavigate()
@@ -29,6 +30,7 @@ export default function CreateMealPage() {
                 : `/nutrition/${encodeURIComponent(query)}`
             const data = await api.get(path)
             setResults(data)
+            setError(null)
         } catch {
             setError('Search failed')
         }
@@ -82,94 +84,144 @@ export default function CreateMealPage() {
     }, { calories: 0, protein: 0, carbs: 0, fat: 0})
 
     return (
-        <div>
-            <h1>Create Meal</h1>
+        <div className={styles.container}>
+            <h1 className={styles.title}>Create Meal</h1>
 
             {/* meal name */}
-            <input
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder="Meal name..."
-            />
+            <div className={styles.section}>
+                <input
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    placeholder="Meal name..."
+                />
+            </div>
 
             {/* tags */}
-            <div>
-                {TAGS.map(tag => (
-                    <button
-                        key={tag}
-                        onClick={() => handleTagToggle(tag)}
-                        style={{ fontWeight: selectedTags.includes(tag) ? 'bold' : 'normal' }}
-                    >
-                        {tag}
-                    </button>
-                ))}
+            <div className={styles.section}>
+                <p className="section-label">Tags</p>
+                <div className={styles.tagRow}>
+                    {TAGS.map(tag => (
+                        <button
+                            key={tag}
+                            onClick={() => handleTagToggle(tag)}
+                            className={`tag-btn ${selectedTags.includes(tag) ? 'active' : ''}`}
+                        >
+                            {tag}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* category filter */}
+            <div className={styles.section}>
+                <p className="section-label">Category</p>
+                <div className={styles.categoryRow}>
+                    {FOOD_CATEGORIES.map(cat => (
+                        <button
+                            key={cat.value}
+                            onClick={() => setCategory(cat.value)}
+                            className={`tag-btn ${category === cat.value ? 'active' : ''}`}
+                        >
+                            {cat.label}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             {/* ingredient search */}
-            <div style={{
-                display:        'flex',
-                gap:            '8px',
-                marginBottom:   '8px',
-                flexWrap:       'wrap'
-            }}>
-                {FOOD_CATEGORIES.map(cat => (
+            <div className={styles.section}>
+                <p className="section-label">Search ingredient</p>
+                <div className={styles.searchRow}>
+                    <input
+                        value={query}
+                        onChange={e => setQuery(e.target.value)}
+                        onKeyDown={e => e.key === 'Enter' && handleSearch()}
+                        placeholder="Search ingredient..."
+                    />
                     <button
-                        key={cat.value}
-                        onClick={() => setCategory(cat.value)}
-                        className={`tag-btn ${category === cat.value ? 'active' : ''}`}
+                        className={`btn btn.primary ${styles.searchBtn}`}
+                        onClick={handleSearch}
                     >
-                        {cat.label}
+                        Search
                     </button>
-                ))}
-            </div>
-            <input
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleSearch()}
-                placeholder="Search ingredient..."
-            />
-            <button onClick={handleSearch}>Search</button>
-
-            {results.map(food => (
-                <div key={food.fdcId} onClick={() => handleAddIngredient(food)}>
-                    {food.name} ({food.category})
                 </div>
-            ))}
+
+                {results.length > 0 && (
+                    <div className={`card ${styles.results}`}>
+                        {results.map(food => (
+                            <div
+                                key={food.fdcId}
+                                className={styles.resultsItem}
+                                onClick={() => handleAddIngredient(food)}
+                            >
+                                {food.name}
+                                <span className={styles.resultCategory}>{food.category}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
 
             {/* ingredient list */}
             {ingredients.length > 0 && (
-                <div>
-                    <h3>Ingredients</h3>
-                    {ingredients.map(ing => (
-                        <div key={ing.fdcId}>
-                            <span>{ing.name}</span>
-                            <input
-                                type="number"
-                                min="1"
-                                value={ing.amount}
-                                onChange={e => handleAmountChange(ing.fdcId, e.target.value)}
-                            />
-                            <span>g</span>
-                            <button onClick={() => handleRemove(ing.fdcId)}>Remove</button>
-                        </div>
-                    ))}
+                <div className={styles.section}>
+                    <p className="section-label">Ingredients</p>
+                    <div className={`card ${styles.ingredients}`}>
+                        {ingredients.map(ing => (
+                            <div key={ing.fdcId} className={styles.ingredientRow}>
+                                <span className={styles.ingredientName}>{ing.name}</span>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    value={ing.amount}
+                                    className={styles.amountInput}
+                                    onChange={e => handleAmountChange(ing.fdcId, e.target.value)}
+                                />
+                                <span className={styles.unit}>g</span>
+                                <button
+                                    className={`btn ${styles.removeBtn}`}
+                                    onClick={() => handleRemove(ing.fdcId)}
+                                >
+                                    Remove
+                                </button>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             )}
 
             {/* live ing preview */}
             {ingredients.length > 0 && (
-                <div>
-                    <h3>Nutrition preview</h3>
-                    <p>Calories:    {Math.round(preview.calories)}kcal</p>
-                    <p>Protein:     {Math.round(preview.protein)}g</p>
-                    <p>Carbs:       {Math.round(preview.carbs)}g</p>
-                    <p>Fat:         {Math.round(preview.fat)}g</p>
+                <div className={styles.section}>
+                    <p className="section-label">Nutrition preview</p>
+                    <div className="nutrition-preview">
+                        <div>
+                            <p className="label">Calories</p>
+                            <p className="value">{Math.round(preview.calories)}kcal</p>
+                        </div>
+                        <div>
+                            <p className="label">Protein</p>
+                            <p className="value">{Math.round(preview.protein)}g</p>
+                        </div>
+                        <div>
+                            <p className="label">Carbs</p>
+                            <p className="value">{Math.round(preview.carbs)}g</p>
+                        </div>
+                        <div>
+                            <p className="label">Fat</p>
+                            <p className="value">{Math.round(preview.fat)}g</p>
+                        </div>
+                    </div>
                 </div>
             )}
 
-            {error && <p>{error}</p>}
+            {error && <p className={styles.error}>{error}</p>}
 
-            <button onClick={handleSave} disabled={saving}>
+            <button
+                className={`btn btn-primary ${styles.saveBtn}`}
+                onClick={handleSave}
+                disabled={saving}
+            >
                 {saving ? 'Saving...' : 'Save meal'}
             </button>
         </div>
