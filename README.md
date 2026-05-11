@@ -13,6 +13,7 @@ nourish is a web app where users can search for ingredients, build meals, and tr
 - **Database:** MongoDB Atlas (Mongoose)
 - **Auth:** JWT + bcrypt
 - **Nutritional data:** USDA FoodData Central API
+- **Input validation:** zod
 
 ## Getting Started
 
