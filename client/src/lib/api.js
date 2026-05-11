@@ -7,6 +7,8 @@ const request = async (path, options = {}) => {
         ...options,
         headers: {
             'Content-Type': 'application/json',
+            'Cache-Controll': 'no-cache, no-store',
+            'Pragma': 'no-cache',
             ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {}),
             ...options.headers,
         },

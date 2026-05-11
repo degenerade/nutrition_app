@@ -7,7 +7,7 @@ const getAccessToken = async () => {
     }
 
     const credentials = Buffer.from(
-        `${process.env.FATSECRET_CLIENT_ID}:${FATSECRET_CLIENT_SECRET}`
+        `${process.env.FATSECRET_CLIENT_ID}:${process.env.FATSECRET_CLIENT_SECRET}`
     ).toString('base64')
 
     const response = await fetch('https://oauth.fatsecret.com/connect/token', {
@@ -16,7 +16,7 @@ const getAccessToken = async () => {
             'Authorization':    `Basic ${credentials}`,
             'Content-Type':     'application/x-www-form-urlencoded'
         },
-        body:   'grant_type=client_credentials&scope=basic'
+        body:   'grant_type=client_credentials&scope=basic premier'
     })
 
     const data = await response.json()
@@ -34,13 +34,14 @@ export const searchIngredient = async (req, res) => {
         const token = await getAccessToken()
 
         const response = await fetch(
-            `https://platform.fatsecret.com/rest/server.api?method=foods.search.v3&search_expression={encodedURIComponent(ingredient)}&format=json&max_results=&&include_food_images=true&flag_default_serving=true`,
+            `https://platform.fatsecret.com/rest/server.api?method=foods.search.v3&search_expression=${encodeURIComponent(ingredient)}&format=json&max_results=8&include_food_images=true&flag_default_serving=true`,
             {
                 headers: { Authorization: `Bearer ${token}` }
             }
         )
 
         const data = await response.json()
+        console.log(JSON.stringify(data, null, 2))
         const foods = data.foods_search?.results?.food ?? []
 
         const results = foods
@@ -69,7 +70,7 @@ export const searchIngredient = async (req, res) => {
                                 calories:   parseFloat(per100g?.calories ?? 0),
                                 protein:    parseFloat(per100g?.protein ?? 0),
                                 fat:        parseFloat(per100g?.fat ?? 0),
-                                carbs:      parseFloat(per100g?.carbs ?? 0),
+                                carbs:      parseFloat(per100g?.carbohydrates ?? 0),
                                 fiber:      parseFloat(per100g?.fiber ?? 0),
                                 sugar:      parseFloat(per100g?.sugar ?? 0)
                             }
