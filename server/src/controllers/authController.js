@@ -2,9 +2,7 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { User, Counter } from '../models/userModel.js'
 import { email } from 'zod'
-
-const signToken = (user) =>
-    jwt.sign({ sub: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' })
+import { signToken } from '../middleware/auth.js'
 
 const controller = {}
 

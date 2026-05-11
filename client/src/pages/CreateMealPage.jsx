@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
-import { TAGS, FOOD_CATEGORIES } from '../lib/constants'
+import { TAGS } from '../lib/constants'
 
 export default function CreateMealPage() {
     const navigate = useNavigate()
@@ -10,10 +10,10 @@ export default function CreateMealPage() {
     const [selectedTags, setSelectedTags]   = useState([])
     const [query, setQuery]                 = useState('')
     const [results, setResults]             = useState([])
-    const [ingredients, setIngredients]     = useState([]) // fdcId, name, amount, per100g
+    const [ingredients, setIngredients]     = useState([]) // foodId, name, amount, per100g
     const [error, setError]                 = useState(null)
     const [saving, setSaving]               = useState(false)
-    const [category, setCategory]           = useState('')
+    const [foodType, setfoodType]           = useState('')
 
     const handleTagToggle = (tag) => {
         setSelectedTags(prev =>
@@ -24,11 +24,12 @@ export default function CreateMealPage() {
     const handleSearch = async () => {
         if (!query.trim()) return
         try {
-            const path = category
-                ? `/nutrition/${encodeURIComponent(query)}?category=${encodeURIComponent(category)}`
+            const path = foodType
+                ? `/nutrition/${encodeURIComponent(query)}?category=${encodeURIComponent(foodType)}`
                 : `/nutrition/${encodeURIComponent(query)}`
             const data = await api.get(path)
             setResults(data)
+            setError(null)
         } catch {
             setError('Search failed')
         }
@@ -36,24 +37,39 @@ export default function CreateMealPage() {
 
     const handleAddIngredient = (food) => {
         //duplicates
-        if (ingredients.find(i => i.fdcId === food.fdcId)) {
+        if (ingredients.find(i => i.foodId === food.foodId)) {
             setResults([])
             setQuery('')
             return
         }
-        setIngredients(prev => [...prev, { ...food, amount: 100 }]) //default 100g
+        const newIngredients = [...ingredients, { ...food, amount: 100 }] //default 100g
+        setIngredients(newIngredients)
+
+        const allVegan = newIngredients.every(i => i.isVegan)
+        const allVegetarian = newIngredients.every(i => i.isVegetarian)
+
+        setSelectedTags(prev => {
+            let tags = prev.filter(t => t !== 'vegan' && t !== 'vegetarian')
+            if (allVegan) {
+                tags = [...tags, 'vegan', 'vegetarian']
+            } else if (allVegetarian) {
+                tags = [...tags, 'vegetarian']
+            }
+            return tags
+        })
+
         setResults([])
         setQuery('')
     }
 
-    const handleAmountChange = (fdcId, value) => {
+    const handleAmountChange = (foodId, value) => {
         setIngredients(prev =>
-            prev.map(i => i.fdcId === fdcId ? { ...i, amount: Number(value) } : i)
+            prev.map(i => i.foodId === foodId ? { ...i, amount: Number(value) } : i)
         )
     }
 
-    const handleRemove = (fdcId) => {
-        setIngredients(prev => prev.filter(i => i.fdcId !== fdcId))
+    const handleRemove = (foodId) => {
+        setIngredients(prev => prev.filter(i => i.foodId !== foodId))
     }
 
     const handleSave = async () => {
@@ -105,23 +121,20 @@ export default function CreateMealPage() {
                 ))}
             </div>
 
-            {/* ingredient search */}
-            <div style={{
-                display:        'flex',
-                gap:            '8px',
-                marginBottom:   '8px',
-                flexWrap:       'wrap'
-            }}>
-                {FOOD_CATEGORIES.map(cat => (
+            {/* food type toggler */}
+            <div>
+                {['All', 'Generic', 'Brand'].map(type => (
                     <button
-                        key={cat.value}
-                        onClick={() => setCategory(cat.value)}
-                        className={`tag-btn ${category === cat.value ? 'active' : ''}`}
+                        key={type}
+                        onClick={() => setfoodType(type === 'All' ? '' : type)}
+                        className={`tag-btn ${foodType === (type === 'All' ? '' : type) ? 'active' : ''}`}
                     >
-                        {cat.label}
+                        {type}
                     </button>
                 ))}
             </div>
+
+            {/* ingredient search */}
             <input
                 value={query}
                 onChange={e => setQuery(e.target.value)}
@@ -129,10 +142,11 @@ export default function CreateMealPage() {
                 placeholder="Search ingredient..."
             />
             <button onClick={handleSearch}>Search</button>
-
+            
+            {/* ing results */}
             {results.map(food => (
-                <div key={food.fdcId} onClick={() => handleAddIngredient(food)}>
-                    {food.name} ({food.category})
+                <div key={food.foodId} onClick={() => handleAddIngredient(food)}>
+                    {food.name} ({food.brand})
                 </div>
             ))}
 
@@ -141,16 +155,16 @@ export default function CreateMealPage() {
                 <div>
                     <h3>Ingredients</h3>
                     {ingredients.map(ing => (
-                        <div key={ing.fdcId}>
+                        <div key={ing.foodId}>
                             <span>{ing.name}</span>
                             <input
                                 type="number"
                                 min="1"
                                 value={ing.amount}
-                                onChange={e => handleAmountChange(ing.fdcId, e.target.value)}
+                                onChange={e => handleAmountChange(ing.foodId, e.target.value)}
                             />
                             <span>g</span>
-                            <button onClick={() => handleRemove(ing.fdcId)}>Remove</button>
+                            <button onClick={() => handleRemove(ing.foodId)}>Remove</button>
                         </div>
                     ))}
                 </div>

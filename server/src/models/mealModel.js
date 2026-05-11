@@ -5,7 +5,7 @@ const mealSchema = new mongoose.Schema({
     tags: [String],
     createdBy: { type: Number, ref: 'User', required: true },
     ingredients: [{
-        fdcId: Number,
+        foodId: Number,
         name: String,
         amount: Number, // grams
         per100g: {
