@@ -1,0 +1,40 @@
+.container {
+    max-width: 1060px;
+    margin: 0;
+    padding: 2rem;
+}
+
+.title {
+    margin-bottom: 1.5rem;
+}
+
+.tagBar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 2rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.empty {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}

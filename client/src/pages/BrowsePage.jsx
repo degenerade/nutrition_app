@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { api } from '../lib/api'
 import { TAGS } from '../lib/constants'
 import MealCard from '../components/MealCard'
+import styles from '../styles/BrowsePage.module.css'
 
 export default function BrowsePage() {
     const [meals, setMeals]         = useState([])
@@ -31,34 +32,36 @@ export default function BrowsePage() {
     if (error)      return <p>{error}</p>
 
     return (
-        <div>
-            <h1>Browse Meals</h1>
-
+        <div className={styles.container}>
+            <h1 className={styles.title}>Browse Meals</h1>
             {/* Tag filters */}
-            <div>
+            <div className={styles.tagBar}>
                 {TAGS.map(tag => (
                     <button
                         key={tag}
                         onClick={() => handleTag(tag)}
-                        style={{ fontWeight: activeTag === tag ? 'bold' : 'normal' }}
+                        className={`tag-btn ${activeTag === tag ? 'active' : ''}`}
                     >
                         {tag}
                     </button>
                 ))}
-                {activeTag && <button onClick={() => setActiveTag(null)}>Clear</button>}
+                <button
+                    className="btn"
+                    onClick={() => setActiveTag(null)}
+                    style={{ visibility: activeTag ? 'visible' : 'hidden' }}
+                >
+                    Clear
+                </button>
             </div>
-
             {/* Meal grid */}
-            {meals.length === 0
-              ? <p>No meals found</p>
-              : <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem'}}>
-                    {meals.map(meal => (
+            <div className={styles.grid}>
+                {meals.length === 0
+                    ? <p className={styles.empty}>No meals found</p>
+                    : meals.map(meal => (
                         <MealCard key={meal._id} meal={meal}/>
-                    ))}
-
-                </div>
-
-            }
+                        ))
+                    }
+            </div>
         </div>
     )
 }

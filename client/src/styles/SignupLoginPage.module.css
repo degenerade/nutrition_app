@@ -1,0 +1,54 @@
+.container {
+    min-height: calc(100vh - 60px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    width: 100%;
+    max-width: 400px;
+    padding: 2.5rem;
+    background: var(--bg-surface);
+    border: 0.5px solid var(--border);
+    border-radius: 16px;
+}
+
+.title {
+    margin-bottom: 2rem;
+    font-size: 28px;
+}
+
+.fields {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.error {
+    color: #ff6b6b;
+    font-size: 13px;
+    margin-bottom: 1rem;
+}
+
+.submitBtn {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 1rem;
+}
+
+.link {
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.link a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.link a:hover {
+    text-decoration: underline;
+}

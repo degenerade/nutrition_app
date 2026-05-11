@@ -13,7 +13,6 @@
     border-color: var(--border-accent);
     color: var(--accent);
 }
-
 .btn-primary {
     border-color: var(--accent-deep);
     color: var(--accent-dim);
@@ -22,12 +21,10 @@
 .btn-primary:hover {
     background: #3B6D11;
 }
-
 .btn-active {
     color: var(--accent);
     border-color: var(--border-accent);
 }
-
 /* cards */
 .card {
     background: var(--bg-surface);
@@ -35,7 +32,6 @@
     border-radius: 12px;
     padding: 14px;
 }
-
 /* tags/pills */
 .pill {
     color: #7ab85a;
@@ -45,10 +41,9 @@
     border-radius: 999px;
     padding: 3px 8px;
 }
-
 .tag-btn {
     color: var(--text-secondary);
-    background: none;
+    background: var(--bg-surface);
     border: 0.5px solid var(--border);
     cursor: pointer;
     font-size: 12px;
@@ -60,7 +55,6 @@
     color: var(--accent);
     background: var(--border-accent);
 }
-
 /* nutrition preview bar */
 .nutrition-preview {
     background: var(--bg-raised);
@@ -84,7 +78,6 @@
     font-size: 20px;
     font-weight: 500;
 }
-
 /* section label */
 .section-label {
     color: var(--text-muted);

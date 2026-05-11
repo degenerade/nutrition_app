@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { api } from '../lib/api'
+import styles from '../styles/SignupLoginPage.module.css'
 
 export default function SignupPage() {
     const { login } = useAuth()
@@ -28,38 +29,45 @@ export default function SignupPage() {
     }
 
     return (
-        <div>
-            <h1>Sign up</h1>
+        <div className={styles.container}>
+            <div className={styles.card}>
+                <h1 className={styles.title}>Sign up</h1>
+                <div className={styles.fields}>
+                    <input
+                        name="name"
+                        type="text"
+                        placeholder="Name"
+                        value={form.name}
+                        onChange={handleChange}
+                    />
+                    <input
+                        name="email"
+                        type="email"
+                        placeholder="Email"
+                        value={form.email}
+                        onChange={handleChange}
+                    />
+                    <input
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                        value={form.password}
+                        onChange={handleChange}
+                    />
+                </div>
 
-            <input
-                name="name"
-                type="text"
-                placeholder="Name"
-                value={form.name}
-                onChange={handleChange}
-            />
-            <input
-                name="email"
-                type="email"
-                placeholder="Email"
-                value={form.email}
-                onChange={handleChange}
-            />
-            <input
-                name="password"
-                type="password"
-                placeholder="Password"
-                value={form.password}
-                onChange={handleChange}
-            />
+                {error && <p className={styles.error}>{error}</p>}
 
-            {error && <p>{error}</p>}
+                <button
+                    className={`btn btn-primary ${styles.submitBtn}`}
+                    onClick={handleSubmit}
+                    disabled={loading}
+                >
+                    {loading ? 'Signing up...' : 'Sign up'}
+                </button>
 
-            <button onClick={handleSubmit} disabled={loading}>
-                {loading ? 'Signing up...' : 'Sign up'}
-            </button>
-
-            <p>Already have an account? <Link to="/login">Log in</Link></p>
+                <p className={styles.link}>Already have an account? <Link to="/login">Log in</Link></p>
+            </div>
         </div>
     )
 }
