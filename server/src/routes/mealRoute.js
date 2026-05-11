@@ -28,7 +28,7 @@ const createMealSchema = z.object({
 const updateMealSchema = z.object({
     name:   z.string().min(1).optional(),
     tags:   z.array(z.string()).optional(),
-}).string()
+}).strict()
 
 const validate = (schema) => (req, res, next) => {
     const result = schema.safeParse(req.body)
