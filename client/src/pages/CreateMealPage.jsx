@@ -26,8 +26,8 @@ export default function CreateMealPage() {
         if (!query.trim()) return
         try {
             const path = category
-                ? `/nutrition/${encodeURIComponent(query)}?category=${encodeURIComponent(category)}`
-                : `/nutrition/${encodeURIComponent(query)}`
+                ? `/ingredient/${encodeURIComponent(query)}?category=${encodeURIComponent(category)}`
+                : `/ingredient/${encodeURIComponent(query)}`
             const data = await api.get(path)
             setResults(data)
             setError(null)

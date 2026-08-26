@@ -11,10 +11,15 @@ export const searchIngredient = async (req, res) => {
             return res.json(cached)
         }
 
-        const categoryParam = category ? `,${encodeURIComponent(category)}` : ''
-        const response = await fetch(
-            `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(req.params.ingredient)}&dataType=Foundation,SR Legacy&pageSize=5&api_key=${process.env.USDA_API_KEY}`
-        )
+        const params = new URLSearchParams({
+            query: req.params.ingredient,
+            pageSize: 5,
+            api_key: process.env.USDA_API_KEY
+        })
+        const queryString = params.toString().replace(/\+/g, '%20')
+        const url = `https://api.nal.usda.gov/fdc/v1/foods/search?${params}&dataType=Foundation,SR Legacy`
+        console.log('Fetching:', url)
+        const response = await fetch(url)
         const data = await response.json()
 
         const getNutrient = (food, id) =>
@@ -37,10 +42,11 @@ export const searchIngredient = async (req, res) => {
                 }
             }))
 
-        await Promise.all(results.map(r => ingredientModel.saveIngredient(r)))
+        res.json(results)
 
         res.json(results)
     } catch (err) {
+        console.error('Nutrition error:', err)
         res.status(500).json({ error: err.message })
     }
 }

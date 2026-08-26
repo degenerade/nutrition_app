@@ -29,7 +29,7 @@ ingredientModel.findByQuery = async (query) => {
 }
 
 ingredientModel.saveIngredient = async (data) => {
-    return await Ingredient.findByIdAndUpdate(
+    return await Ingredient.findOneAndUpdate(
         { fdcId: data.fdcId },
         data,
         { upsert: true, returnDocument: 'after' }
